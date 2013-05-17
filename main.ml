@@ -38,20 +38,22 @@ let joueur2_vitesse = 80.;; (* en pixels par seconde *)
 type tballe = {
     set_pos : int -> int -> unit ;
     set_angle : float -> unit ;
+    get_rayon : unit -> int ;
     getx : unit -> int ;
     getxf : unit -> float ;
     getvitessexf : unit -> float ;
     gety : unit -> int ;
     getyf : unit -> float ;
     deplace : float -> unit ;
-    applique_vitesse : (float -> float -> (float * float)) -> unit ;
+    applique_sur_direction : (float -> float -> (float * float)) -> unit ;
   };;
 
 let balle = (function() -> begin
   (* Propriétés privées *)
-  let x, y, vitessex, vitessey, vitesse = ref 0., ref 0., ref 0., ref 0., 300. in {
+  let x, y, vitessex, vitessey, vitesse, rayon = ref 0., ref 0., ref 0., ref 0., 300., 5 in {
 
     (* Fonctions d'accès *)
+    get_rayon = (fun () -> rayon) ;
     getx = (fun () -> (int_of_float !x)) ;
     getxf = (fun () -> !x) ;
     getvitessexf = (fun () -> !vitessex) ;
@@ -79,7 +81,7 @@ let balle = (function() -> begin
 
   (* Applique la fonction "f" au vecteur de vélocité représenté par 
      vitessex et vitessey *)
-  applique_vitesse = (fun f ->
+  applique_sur_direction = (fun f ->
     let nouv_vx, nouv_vy = f !vitessex !vitessey in
     vitessex := nouv_vx ;
     vitessey := nouv_vy ;
@@ -172,18 +174,18 @@ let rendu () =
       Graphics.fill_rect joueur1_x (!joueur1_y                - hauteur_joueur/2) largeur_joueur hauteur_joueur;
       Graphics.fill_rect joueur2_x ((int_of_float !joueur2_y) - hauteur_joueur/2) largeur_joueur hauteur_joueur;
       Graphics.fill_rect
-	((balle.getx()) - rayon_balle)
-	((balle.gety()) - rayon_balle)
-	(rayon_balle * 2)
-	(rayon_balle * 2)
+	((balle.getx()) - (balle.get_rayon()))
+	((balle.gety()) - (balle.get_rayon()))
+	((balle.get_rayon()) * 2)
+	((balle.get_rayon()) * 2)
   end
 	
   | Quitter -> ();; 
 
 
 
-(* Calcul et application de la vélocité et détection de collisions. *)
-let velocite estampille = 
+(* Calcul et application des déplacements, détection de collisions et comportement de l'adversaire. *)
+let engin estampille = 
   match !etat_courant with
   | Splash -> ()
 
@@ -224,11 +226,11 @@ let velocite estampille =
     
     (* Collision entre la balle et le mur du haut *)
     if balle.gety() > hauteur_fenetre - 40 then
-      balle.applique_vitesse (fun vx vy -> (vx, -. abs_float vy) );
+      balle.applique_sur_direction (fun vx vy -> (vx, -. abs_float vy) );
 
     (* Collision entre la balle et le mur du bas *)
     if balle.gety() < 0 then
-      balle.applique_vitesse (fun vx vy -> (vx, abs_float vy) );
+      balle.applique_sur_direction (fun vx vy -> (vx, abs_float vy) );
 
     (* But par joueur 1 *)
     if balle.getx() > largeur_fenetre then begin
@@ -267,8 +269,8 @@ let main () =
 	(* Gestion d'entrée utilisateur *)
 	entree ();
 
-        (* Vélocité et collision *)
-        velocite estampille;
+        (* Déplacements, collisions et comportement de l'adversaire *)
+        engin estampille;
 
         (* Appel récursif conditionnel à l'état du jeu *)
         if !etat_courant <> Quitter then aux (Unix.gettimeofday());
