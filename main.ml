@@ -17,7 +17,11 @@ let maxfps = 40.;;
 (* État de l'application *)
 type etat = Splash | EnJeu | Pause | Quitter ;; 
 
+(* Toutes les fonctions membres des types tjoueur et tballe sont préfixés
+   car deux types ne peuvent pas partagés des champs de mêmes noms 
+   (ça brise l'inférence de types).
 
+   http://caml.inria.fr/pub/old_caml_site/FAQ/FAQ_EXPERT-eng.html#labels_surcharge *)
 
 (* Les joueurs
    Les fonctions des joueurs donnent accès à leurs
