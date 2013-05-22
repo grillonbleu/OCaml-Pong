@@ -5,7 +5,7 @@
  *  François Moreau
  *  mai 2013 
  *
- *  Usage : Chargez le tout dans l'interpréteur et tapez "OCaml.main ();;"
+ *  Usage : Chargez le tout dans l'interpréteur et tapez "OCamlPong.main();;"
  *)
 
 #load "graphics.cma";;
