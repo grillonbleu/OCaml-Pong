@@ -30,7 +30,6 @@ Idées d'extension
 ==========
 
 1. Pointage.
-2. Encapsuler le tout dans un module.
 3. Effets visuels (sur contact entre la balle et un joueur, sur rebond au mur, traînée derrière la balle, etc.).
 4. Pouvoir changer de joueur en pleine partie.
 5. État "but marqué" marquant un temps d'arrêt après qu'un but soit marqué.
