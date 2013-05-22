@@ -1,12 +1,22 @@
 (**
- *  PONG OCaml
+ *  PONG OCaml 
+ *  Voir README.md
  *
  *  François Moreau
  *  mai 2013 
+ *
+ *  Usage : Chargez le tout dans l'interpréteur et tapez "OCaml.main ();;"
  *)
 
 #load "graphics.cma";;
 #load "unix.cma";; 
+
+module type PONG = 
+  sig
+    val main : unit -> unit
+  end;;
+
+module OCamlPong : PONG = struct
 
 (* Constantes *)
 let pi = acos (-. 1.);;
@@ -352,3 +362,5 @@ let main () =
       (batiJoueur (float_of_int (largeur_fenetre - 40)) (float_of_int (hauteur_fenetre/2)));
     Graphics.close_graph();
   end;;
+
+end;; (* Fin module OCaml Pong *)
